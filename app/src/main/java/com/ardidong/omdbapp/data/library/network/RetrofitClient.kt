@@ -6,7 +6,7 @@ import javax.inject.Inject
 class RetrofitClient @Inject constructor(
     private val retrofit: Retrofit
 ) : NetworkClient {
-    override suspend fun <T : Any> create(clazz: Class<T>): T {
+    override fun <T : Any> create(clazz: Class<T>): T {
         return retrofit.create(clazz)
     }
 }

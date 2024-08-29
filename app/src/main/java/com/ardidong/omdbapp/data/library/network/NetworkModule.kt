@@ -15,6 +15,12 @@ import javax.inject.Singleton
 class NetworkModule {
     @Singleton
     @Provides
+    fun providesApiKeyInterceptor(): ApiKeyInterceptor {
+        return ApiKeyInterceptor()
+    }
+
+    @Singleton
+    @Provides
     fun providesHttpLoggingInterceptor() = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
     }
@@ -23,9 +29,11 @@ class NetworkModule {
     @Provides
     fun providesOkHttpClient(
         httpLoggingInterceptor: HttpLoggingInterceptor,
+        apiKeyInterceptor: ApiKeyInterceptor
     ): OkHttpClient = OkHttpClient
         .Builder()
         .addInterceptor(httpLoggingInterceptor)
+        .addInterceptor(apiKeyInterceptor)
         .build()
 
     @Singleton
