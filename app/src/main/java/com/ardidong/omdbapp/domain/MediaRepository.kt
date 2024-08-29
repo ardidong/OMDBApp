@@ -1,10 +1,10 @@
 package com.ardidong.omdbapp.domain
 
-import com.ardidong.omdbapp.common.ResultOf
+import androidx.paging.PagingData
+import kotlinx.coroutines.flow.Flow
 
 interface MediaRepository {
     suspend fun searchMedia(
-        title: String,
-        page: Int
-    ): ResultOf<PagedData<Media>>
+        title: String
+    ): Flow<PagingData<Media>>
 }

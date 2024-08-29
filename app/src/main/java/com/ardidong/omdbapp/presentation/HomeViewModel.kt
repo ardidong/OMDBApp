@@ -1,9 +1,9 @@
 package com.ardidong.omdbapp.presentation
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.ardidong.omdbapp.domain.Media
 import com.ardidong.omdbapp.domain.MediaRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,17 +21,16 @@ class HomeViewModel @Inject constructor(
     private var _state = MutableStateFlow(HomeScreenState.EMPTY)
     val state: StateFlow<HomeScreenState> get() = _state
 
-    fun search(title: String, page: Int = 1) {
-        viewModelScope.launch {
-            repository.searchMedia("inside out", 1).fold(
-                success = {
-                    Log.d("HOME VIEW MODEL", it.results.toString())
-                },
-                failure = {
-                    Log.e("HOME VIEW MODEL", it.message)
-                }
-            )
-        }
+    fun search(title: String) = viewModelScope.launch {
+        val searchTitle = title.trim().replace(" ", "+")
+        updateState { it.copy(mediaList = emptyFlow(), titleFilter = title) }
+        val mediaList = repository.searchMedia(searchTitle)
+            .cachedIn(viewModelScope)
+        updateState { it.copy(mediaList = mediaList) }
+    }
+
+    private fun updateState(update: (HomeScreenState) -> HomeScreenState) {
+        _state.value = update(_state.value)
     }
 }
 

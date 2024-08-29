@@ -1,5 +1,6 @@
 package com.ardidong.omdbapp.data.library
 
+import com.ardidong.omdbapp.data.MediaRepositoryImpl
 import com.ardidong.omdbapp.domain.MediaRepository
 import dagger.Binds
 import dagger.Module
