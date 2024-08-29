@@ -1,4 +1,4 @@
-package com.ardidong.omdbapp.ui.theme
+package com.ardidong.omdbapp.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 
