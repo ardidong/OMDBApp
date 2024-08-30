@@ -1,6 +1,9 @@
 package com.ardidong.omdbapp.presentation
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -13,6 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.ardidong.omdbapp.presentation.component.MediaCard
 import com.ardidong.omdbapp.presentation.component.SearchTextField
 import com.ardidong.omdbapp.presentation.theme.OMDBAppTheme
 
@@ -42,19 +46,25 @@ fun HomeScreenContent(
     ) { innerPadding ->
         val mediaList = state.mediaList.collectAsLazyPagingItems()
         Column(
-            modifier = Modifier.padding(innerPadding).padding(horizontal = 8.dp)
+            modifier = Modifier
+                .padding(innerPadding)
+                .padding(horizontal = 8.dp)
         ) {
             SearchTextField(
                 value = state.titleFilter,
                 onValueChanged = onSearch
             )
 
-            LazyColumn {
+            LazyColumn(
+                contentPadding = PaddingValues(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
                 items(mediaList.itemCount) { index ->
                     mediaList[index]?.let { media ->
-                        Text(text = media.title)
-                        Text(text = media.year)
-                        Text(text = media.poster)
+                        MediaCard(
+                            modifier = Modifier.fillMaxWidth(),
+                            media = media
+                        )
                     }
                 }
             }
