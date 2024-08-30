@@ -25,6 +25,16 @@ class SearchMapper {
         )
     }
 
+    fun toModel(entity: MediaEntity) : Media {
+        return Media(
+            type = entity.type,
+            year = entity.year,
+            imdbID = entity.imdbID,
+            poster = entity.poster,
+            title = entity.title
+        )
+    }
+
     fun toEntity(model: Media, searchTerm: String, lastUpdate: Date): MediaEntity {
         return MediaEntity(
             imdbID = model.imdbID,
@@ -35,5 +45,20 @@ class SearchMapper {
             lastUpdated = lastUpdate,
             year = model.year
         )
+    }
+
+    fun toEntities(response: SearchMediaResponse, searchTerm: String, lastUpdate: Date): List<MediaEntity> {
+        val result = response.search
+        return result?.map { item ->
+            MediaEntity(
+                imdbID = item?.imdbID.orEmpty(),
+                type = item?.type.orEmpty().toMediaType(),
+                title = item?.title.orEmpty(),
+                poster = item?.poster.orEmpty(),
+                searchTerm = searchTerm,
+                lastUpdated = lastUpdate,
+                year = item?.year.orEmpty()
+            )
+        }.orEmpty()
     }
 }

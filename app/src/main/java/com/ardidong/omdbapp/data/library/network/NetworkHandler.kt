@@ -14,13 +14,15 @@ suspend fun<T: Any> handleApi(
 
         if (response.isSuccessful && body != null){
             ResultOf.Success(body)
-        }else{
-            ResultOf.Failure(ErrorEntity.ApiResponseError(message = response.message(), errorCode = response.code().toString()))
+        } else {
+            ResultOf.Failure(ErrorEntity.ApiResponseError(
+                message = response.message(),
+                e = HttpException(response)
+            ))
         }
-
     }catch (e: HttpException){
-        ResultOf.Failure(ErrorEntity.ApiResponseError(message = e.message(), errorCode = e.code().toString()))
-    }catch (t: Throwable){
+        ResultOf.Failure(ErrorEntity.ApiResponseError(message = e.message(), e))
+    }catch (t: Exception){
         ResultOf.Failure(ErrorEntity.ApiExceptionError(message = t.message.orEmpty(), t))
     }
 }

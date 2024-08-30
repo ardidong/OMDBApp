@@ -1,5 +1,6 @@
 package com.ardidong.omdbapp.data.db
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -12,6 +13,9 @@ interface MediaDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(movies: List<MediaEntity>)
 
-    @Query("SELECT * FROM medias WHERE searchTerm LIKE '%' || :searchTerm || '%' LIMIT 10")
-    fun getMedias(searchTerm: String): List<MediaEntity>
+    @Query("SELECT * FROM medias WHERE searchTerm = :searchTerm")
+    fun getMedias(searchTerm: String): PagingSource<Int, MediaEntity>
+
+    @Query("DELETE FROM medias WHERE searchTerm = :searchTerm")
+    suspend fun clearMoviesForSearchTerm(searchTerm: String)
 }

@@ -1,14 +1,10 @@
 package com.ardidong.omdbapp.common
 
-sealed class ErrorEntity(open val message: String) {
+import retrofit2.HttpException
 
-    class ApiResponseError(override val message: String, val errorCode: String): ErrorEntity(message)
+sealed class ErrorEntity(open val message: String, open val e: Exception) {
 
-    class ApiExceptionError(override val message: String, e: Throwable): ErrorEntity(message)
+    class ApiResponseError(override val message: String, override val e: HttpException): ErrorEntity(message, e)
 
-    class EmptyResultError(override val message: String): ErrorEntity(message)
-
-    class NotFoundError(override val message: String): ErrorEntity(message)
-
-    class Unknown(override val message: String): ErrorEntity(message)
+    class ApiExceptionError(override val message: String, override val e: Exception): ErrorEntity(message,e )
 }

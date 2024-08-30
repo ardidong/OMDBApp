@@ -22,10 +22,4 @@ object DatabaseModule {
             "app_database"
         ).build()
     }
-
-    @Provides
-    @Singleton
-    fun provideMediaDao(appDatabase: AppDatabase) : MediaDao {
-        return appDatabase.mediaDao()
-    }
 }
