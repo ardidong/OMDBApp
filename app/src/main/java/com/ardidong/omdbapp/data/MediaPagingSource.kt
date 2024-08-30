@@ -2,12 +2,15 @@ package com.ardidong.omdbapp.data
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.ardidong.omdbapp.data.db.MediaDao
 import com.ardidong.omdbapp.data.library.network.handleApi
 import com.ardidong.omdbapp.data.mapper.SearchMapper
 import com.ardidong.omdbapp.domain.Media
+import java.util.Date
 
 class MediaPagingSource(
     private val apiService: MediaApiService,
+    private val mediaDao: MediaDao,
     private val title: String
 ) : PagingSource<Int, Media>() {
     override fun getRefreshKey(state: PagingState<Int, Media>): Int? {
@@ -21,9 +24,13 @@ class MediaPagingSource(
             val result = handleApi {
                 apiService.searchMovie(title, currentPageNumber)
             }.fold(
-                success = {
+                success = { result ->
                     val mapper = SearchMapper()
-                    mapper.toPagedModel(it, currentPageNumber)
+                    mapper.toPagedModel(result, currentPageNumber).also { model ->
+                        val currentDate = Date()
+                        val entities = model.results.map { mapper.toEntity(it, title, currentDate ) }
+                        mediaDao.insertAll(entities)
+                    }
                 },
                 failure = { return LoadResult.Error(RuntimeException()) }
             )
