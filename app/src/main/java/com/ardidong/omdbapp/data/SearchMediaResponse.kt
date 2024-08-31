@@ -4,31 +4,33 @@ import com.google.gson.annotations.SerializedName
 
 data class SearchMediaResponse(
 
-	@field:SerializedName("Response")
+	@SerializedName("Response")
 	val response: String? = null,
 
-	@field:SerializedName("totalResults")
+	@SerializedName("Error")
+	val error: String?,
+
+	@SerializedName("totalResults")
 	val totalResults: String? = null,
 
-	@field:SerializedName("Search")
+	@SerializedName("Search")
 	val search: List<SearchItem?>? = null
 ) {
 	data class SearchItem(
 
-		@field:SerializedName("Type")
+		@SerializedName("Type")
 		val type: String? = null,
 
-		@field:SerializedName("Year")
+		@SerializedName("Year")
 		val year: String? = null,
 
-		@field:SerializedName("imdbID")
+		@SerializedName("imdbID")
 		val imdbID: String? = null,
 
-		@field:SerializedName("Poster")
+		@SerializedName("Poster")
 		val poster: String? = null,
 
-		@field:SerializedName("Title")
+		@SerializedName("Title")
 		val title: String? = null
 	)
-
 }

@@ -19,6 +19,7 @@ private val LightColorScheme = lightColorScheme(
     surface = Color.White, // Light Gray
     onSurface = Color(0xFF212121), // Dark Gray
     error = Color(0xFFD32F2F), // Red
+    errorContainer = Color(0xFFD32F2F), // Red
     onError = Color.White,
     surfaceTint = Color.White
     // You can specify more colors if needed

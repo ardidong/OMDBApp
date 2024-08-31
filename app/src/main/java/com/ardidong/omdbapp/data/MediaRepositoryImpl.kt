@@ -14,14 +14,14 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class MediaRepositoryImpl @Inject constructor(
-    private val apiService: MediaApiService,
-    private val appDatabase: AppDatabase
+    private val appDatabase: AppDatabase,
+    private val remoteMediatorFactory: MediaRemoteMediator.Factory
 ) : MediaRepository {
     @OptIn(ExperimentalPagingApi::class)
     override suspend fun searchMedia(title: String): Flow<PagingData<Media>> {
         return Pager(
             config = PagingConfig(PAGE_SIZE),
-            remoteMediator = MediaRemoteMediator(apiService, title, appDatabase),
+            remoteMediator = remoteMediatorFactory.create(title),
             pagingSourceFactory = {
                 appDatabase.mediaDao().getMedias(title)
             }

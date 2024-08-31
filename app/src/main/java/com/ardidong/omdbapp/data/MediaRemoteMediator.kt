@@ -5,21 +5,25 @@ import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
+import com.ardidong.omdbapp.common.ApiErrorException
 import com.ardidong.omdbapp.common.orZero
 import com.ardidong.omdbapp.data.db.entity.MediaEntity
 import com.ardidong.omdbapp.data.db.entity.RemoteKeyEntity
 import com.ardidong.omdbapp.data.library.db.AppDatabase
 import com.ardidong.omdbapp.data.library.network.handleApi
 import com.ardidong.omdbapp.data.mapper.SearchMapper
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import okio.IOException
 import retrofit2.HttpException
 import java.util.Date
 
 @OptIn(ExperimentalPagingApi::class)
-class MediaRemoteMediator(
+class MediaRemoteMediator @AssistedInject constructor(
     private val apiService: MediaApiService,
-    private val searchTerm: String,
-    private val appDatabase: AppDatabase
+    private val appDatabase: AppDatabase,
+    @Assisted private val searchTerm: String,
 ) : RemoteMediator<Int, MediaEntity>() {
     override suspend fun load(loadType: LoadType, state: PagingState<Int, MediaEntity>): MediatorResult {
         return try {
@@ -39,7 +43,13 @@ class MediaRemoteMediator(
             }
 
             val response = handleApi { apiService.searchMovie(searchTerm, page) }.fold(
-                success = { it },
+                success = {  result ->
+                    if (result.response.orEmpty().equals("false", true)) {
+                        return MediatorResult.Error( ApiErrorException(result.error.orEmpty()))
+                    }
+
+                    result
+                },
                 failure = { return MediatorResult.Error(it.e) }
             )
 
@@ -69,5 +79,10 @@ class MediaRemoteMediator(
         } catch (e: HttpException) {
             MediatorResult.Error(e)
         }
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(searchTerm: String) : MediaRemoteMediator
     }
 }

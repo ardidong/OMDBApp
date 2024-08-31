@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">OMDBApp</string>
+    <string name="error_header">Uh oh, an error occurred</string>
+    <string name="error_connection_message">Unable to connect. Please check your internet connection and try again.</string>
 </resources>

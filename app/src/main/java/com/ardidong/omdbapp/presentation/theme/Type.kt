@@ -44,10 +44,14 @@ val Typography = Typography(
         letterSpacing = 0.sp
     ),
     bodyMedium = TextStyle(
-        fontSize = 14.sp,
-        fontWeight = FontWeight.Normal,
-        color = Color.Gray
-    )
+        fontSize = 16.sp,
+        fontWeight = FontWeight.Normal
+    ),
+    headlineSmall = TextStyle(
+        fontSize = 20.sp,
+        fontWeight = FontWeight.Bold,
+        letterSpacing = 0.15.sp,
+    ),
     /* Other default text styles to override
     labelSmall = TextStyle(
         fontFamily = FontFamily.Default,
