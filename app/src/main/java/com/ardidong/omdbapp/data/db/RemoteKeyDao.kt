@@ -12,7 +12,7 @@ interface RemoteKeyDao {
     suspend fun insertOrReplace(remoteKey: RemoteKeyEntity)
 
     @Query("SELECT * FROM remote_keys WHERE label = :searchTerm")
-    suspend fun remoteKeyByTerm(searchTerm: String): RemoteKeyEntity
+    suspend fun remoteKeyByTerm(searchTerm: String): RemoteKeyEntity?
 
     @Query("DELETE FROM remote_keys WHERE label = :searchTerm")
     suspend fun deleteByTerm(searchTerm: String)

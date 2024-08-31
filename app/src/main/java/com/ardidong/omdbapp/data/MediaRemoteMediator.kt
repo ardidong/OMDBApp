@@ -27,13 +27,12 @@ class MediaRemoteMediator @AssistedInject constructor(
 ) : RemoteMediator<Int, MediaEntity>() {
     override suspend fun load(loadType: LoadType, state: PagingState<Int, MediaEntity>): MediatorResult {
         return try {
-
             val page = when (loadType) {
                 LoadType.REFRESH -> 1
                 LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
                 LoadType.APPEND -> {
                     val remoteKey = appDatabase.remoteKeyDao().remoteKeyByTerm(searchTerm)
-                    if (remoteKey.nextKey == null) {
+                    if (remoteKey?.nextKey == null) {
                         return MediatorResult.Success(
                             endOfPaginationReached = true
                         )
