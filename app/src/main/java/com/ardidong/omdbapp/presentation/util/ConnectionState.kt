@@ -1,4 +1,4 @@
-package com.ardidong.omdbapp.domain.model
+package com.ardidong.omdbapp.presentation.util
 
 sealed class ConnectionState {
     data object Available : ConnectionState()

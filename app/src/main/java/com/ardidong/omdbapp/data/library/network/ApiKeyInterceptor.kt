@@ -9,7 +9,7 @@ class ApiKeyInterceptor : Interceptor {
         val originalUrl = originalRequest.url
 
         val modifiedUrl = originalUrl.newBuilder()
-            .addQueryParameter("apikey", "")
+            .addQueryParameter("apikey", "7511b7a")
             .build()
 
         val modifiedRequest = originalRequest.newBuilder()

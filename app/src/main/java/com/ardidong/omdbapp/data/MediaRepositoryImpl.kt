@@ -7,7 +7,7 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import com.ardidong.omdbapp.data.library.db.AppDatabase
 import com.ardidong.omdbapp.data.mapper.SearchMapper
-import com.ardidong.omdbapp.domain.Media
+import com.ardidong.omdbapp.domain.model.Media
 import com.ardidong.omdbapp.domain.MediaRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
