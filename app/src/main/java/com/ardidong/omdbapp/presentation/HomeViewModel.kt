@@ -23,8 +23,17 @@ class HomeViewModel @Inject constructor(
 
     fun search(title: String) = viewModelScope.launch {
         val searchTitle = title.trim().replace(" ", "+")
-        updateState { it.copy(mediaList = emptyFlow(), titleFilter = title) }
-        val mediaList = repository.searchMedia(searchTitle)
+
+        val searchTerm = searchTitle.ifBlank {
+            if (!repository.hasLocalData()) {
+                "love"
+            } else {
+                searchTitle
+            }
+        }
+
+        updateState { it.copy(mediaList = emptyFlow(), titleFilter = searchTerm) }
+        val mediaList = repository.searchMedia(searchTerm)
             .cachedIn(viewModelScope)
         updateState { it.copy(mediaList = mediaList) }
     }
