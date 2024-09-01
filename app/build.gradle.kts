@@ -82,6 +82,8 @@ dependencies {
     testImplementation(libs.androidx.paging.common)
     testImplementation (libs.kotlinx.coroutines.test)
     testImplementation(libs.androidx.room.testing)
+    testImplementation(libs.mockwebserver)
+    androidTestImplementation(libs.androidx.paging.common)
     androidTestImplementation (libs.androidx.runner)
     androidTestImplementation (libs.androidx.rules)
     androidTestImplementation(libs.androidx.junit)
