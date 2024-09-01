@@ -16,10 +16,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
+import coil.request.ImageRequest
 import com.ardidong.omdbapp.domain.model.Media
 import com.ardidong.omdbapp.presentation.shimmerEffect
 
@@ -41,13 +44,24 @@ fun MediaCard(
         Row(
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 12.dp)
         ) {
-            AsyncImage(
+            SubcomposeAsyncImage(
                 modifier = Modifier
                     .width(75.dp)
                     .height(100.dp)
                     .clip(RoundedCornerShape(8.dp)),
-                model = media.poster,
-                contentDescription = ""
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(media.poster)
+                    .build(),
+                contentDescription = null,
+                contentScale = ContentScale.FillWidth,
+                loading = {
+                    Box(
+                        modifier =  Modifier
+                            .width(75.dp)
+                            .height(100.dp)
+                            .shimmerEffect()
+                    )
+                }
             )
 
             Spacer(modifier = Modifier.width(8.dp))
