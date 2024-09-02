@@ -16,6 +16,12 @@ interface MediaDao {
     @Query("SELECT * FROM medias WHERE searchTerm = :searchTerm")
     fun getMedias(searchTerm: String): PagingSource<Int, MediaEntity>
 
+    @Query("SELECT * FROM medias")
+    fun getAllMedia(): PagingSource<Int, MediaEntity>
+
     @Query("DELETE FROM medias WHERE searchTerm = :searchTerm")
     suspend fun clearMoviesForSearchTerm(searchTerm: String)
+
+    @Query("SELECT COUNT(*) FROM medias")
+    suspend fun countAllMedia(): Int
 }

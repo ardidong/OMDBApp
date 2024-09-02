@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.ardidong.omdbapp.domain.Media
 import com.ardidong.omdbapp.domain.MediaRepository
+import com.ardidong.omdbapp.domain.model.Media
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,8 +23,17 @@ class HomeViewModel @Inject constructor(
 
     fun search(title: String) = viewModelScope.launch {
         val searchTitle = title.trim().replace(" ", "+")
-        updateState { it.copy(mediaList = emptyFlow(), titleFilter = title) }
-        val mediaList = repository.searchMedia(searchTitle)
+
+        val searchTerm = searchTitle.ifBlank {
+            if (!repository.hasLocalData()) {
+                "love"
+            } else {
+                searchTitle
+            }
+        }
+
+        updateState { it.copy(mediaList = emptyFlow(), titleFilter = searchTerm) }
+        val mediaList = repository.searchMedia(searchTerm)
             .cachedIn(viewModelScope)
         updateState { it.copy(mediaList = mediaList) }
     }

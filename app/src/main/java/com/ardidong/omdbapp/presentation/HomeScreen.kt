@@ -1,15 +1,34 @@
 package com.ardidong.omdbapp.presentation
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,6 +42,9 @@ import com.ardidong.omdbapp.presentation.component.MediaCard
 import com.ardidong.omdbapp.presentation.component.MediaCardLoading
 import com.ardidong.omdbapp.presentation.component.SearchTextField
 import com.ardidong.omdbapp.presentation.theme.OMDBAppTheme
+import com.ardidong.omdbapp.presentation.util.ConnectionState
+import com.ardidong.omdbapp.presentation.util.rememberConnectionState
+import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.net.SocketTimeoutException
 
@@ -36,23 +58,92 @@ fun HomeScreen(
     }
 
     val state =  homeViewModel.state.collectAsState()
+    val connectionState by rememberConnectionState()
+    val isConnected by remember {
+        derivedStateOf { connectionState == ConnectionState.Available }
+    }
+
     HomeScreenContent(
         modifier = modifier,
         state = state.value,
+        isConnected = isConnected,
         onSearch = { title ->
             homeViewModel.search(title)
         }
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreenContent(
     modifier: Modifier = Modifier,
     state: HomeScreenState,
-    onSearch: (String) -> Unit
+    onSearch: (String) -> Unit,
+    isConnected: Boolean
 ) {
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+
+    var initialConnectionProcessed by remember { mutableStateOf(false) }
+
+    LaunchedEffect(key1 = isConnected ) {
+        if (!initialConnectionProcessed) {
+            initialConnectionProcessed = true
+            if (isConnected) return@LaunchedEffect
+        }
+
+        scope.launch {
+            if (isConnected) {
+                snackbarHostState.currentSnackbarData?.dismiss()
+                snackbarHostState.showSnackbar(
+                    message = "Back Online",
+                    duration = SnackbarDuration.Short
+                )
+            } else {
+                snackbarHostState.currentSnackbarData?.dismiss()
+                snackbarHostState.showSnackbar(
+                    message = "No Connection",
+                    duration = SnackbarDuration.Indefinite
+                )
+            }
+        }
+    }
+
     Scaffold(
-        modifier = modifier
+        modifier = modifier,
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState) {
+                Snackbar(
+                    snackbarData = it,
+                    containerColor = if (!isConnected)
+                        MaterialTheme.colorScheme.error
+                    else
+                        MaterialTheme.colorScheme.primaryContainer
+                )
+            }
+        },
+        topBar = {
+            Column(
+                modifier = Modifier.background(MaterialTheme.colorScheme.primary)
+            ) {
+                TopAppBar(
+                    title = {
+                        Text(text = "Movie App")
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        titleContentColor = MaterialTheme.colorScheme.onPrimary
+                    )
+                )
+                SearchTextField(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    value = state.titleFilter,
+                    onValueChanged = onSearch
+                )
+                
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+        }
     ) { innerPadding ->
         val mediaList = state.mediaList.collectAsLazyPagingItems()
         Column(
@@ -60,10 +151,17 @@ fun HomeScreenContent(
                 .padding(innerPadding)
                 .padding(horizontal = 8.dp)
         ) {
-            SearchTextField(
-                value = state.titleFilter,
-                onValueChanged = onSearch
-            )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.primary)
+            ) {
+
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
 
             LazyColumn(
                 contentPadding = PaddingValues(8.dp),
