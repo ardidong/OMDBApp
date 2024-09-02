@@ -32,10 +32,6 @@ fun SearchTextField(
 ) {
     Row(
         modifier = modifier
-            .shadow(
-                elevation = 8.dp,
-                shape = RoundedCornerShape(8.dp)
-            )
             .clip(RoundedCornerShape(8.dp))
             .background(Color.White),
         verticalAlignment = Alignment.CenterVertically
