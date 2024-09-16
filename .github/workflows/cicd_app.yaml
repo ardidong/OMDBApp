@@ -1,5 +1,11 @@
 name: Build and Send APK Dev
 
+on:
+  push:
+    branches:
+      - chore/add-cicd
+  workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-latest
