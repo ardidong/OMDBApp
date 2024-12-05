@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -80,6 +81,8 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.paging)
     implementation(libs.coil.compose)
+    implementation(libs.firebase.bom)
+    implementation(libs.firebase.messaging)
     annotationProcessor(libs.androidx.room.compiler)
     kapt(libs.androidx.room.compiler)
 
