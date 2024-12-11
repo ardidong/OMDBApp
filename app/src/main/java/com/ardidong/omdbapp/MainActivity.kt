@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -18,8 +19,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
+import com.ardidong.omdbapp.data.service.notification.PushNotificationService
 import com.ardidong.omdbapp.presentation.HomeScreen
 import com.ardidong.omdbapp.presentation.theme.OMDBAppTheme
+import com.google.firebase.Firebase
+import com.google.firebase.messaging.messaging
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -27,6 +31,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        subscribeTopic()
         setContent {
             OMDBAppTheme {
                 NotificationHandler {
@@ -34,6 +39,13 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    private fun subscribeTopic() {
+        Firebase.messaging.subscribeToTopic(PushNotificationService.TOPIC)
+            .addOnCompleteListener {
+                Log.i("FCM", "success subscribing")
+            }
     }
 }
 

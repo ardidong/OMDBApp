@@ -81,7 +81,7 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.paging)
     implementation(libs.coil.compose)
-    implementation(libs.firebase.bom)
+    implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.messaging)
     annotationProcessor(libs.androidx.room.compiler)
     kapt(libs.androidx.room.compiler)
