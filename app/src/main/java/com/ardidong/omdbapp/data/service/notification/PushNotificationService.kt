@@ -1,8 +1,6 @@
 package com.ardidong.omdbapp.data.service.notification
 
 import android.app.NotificationManager
-import android.util.Log
-import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import com.ardidong.omdbapp.Channel
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -32,7 +30,7 @@ class PushNotificationService : FirebaseMessagingService() {
             .build()
 
         val notificationManager = getSystemService(NotificationManager::class.java)
-        notificationManager.notify(1, builder) // Always use the same ID
+        notificationManager.notify(1, builder)
     }
 
     companion object {

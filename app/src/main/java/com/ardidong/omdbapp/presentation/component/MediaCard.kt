@@ -29,7 +29,8 @@ import com.ardidong.omdbapp.presentation.shimmerEffect
 @Composable
 fun MediaCard(
     modifier: Modifier = Modifier,
-    media: Media
+    media: Media,
+    onClick: () -> Unit
 ) {
     Card(
         modifier = modifier,
@@ -39,7 +40,8 @@ fun MediaCard(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         ),
-        shape = RoundedCornerShape(8.dp)
+        shape = RoundedCornerShape(8.dp),
+        onClick = onClick
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 12.dp)

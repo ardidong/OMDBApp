@@ -1,5 +1,7 @@
 package com.ardidong.omdbapp.presentation
 
+import android.os.Bundle
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -44,9 +46,14 @@ import com.ardidong.omdbapp.presentation.component.SearchTextField
 import com.ardidong.omdbapp.presentation.theme.OMDBAppTheme
 import com.ardidong.omdbapp.presentation.util.ConnectionState
 import com.ardidong.omdbapp.presentation.util.rememberConnectionState
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.net.SocketTimeoutException
+
+val fa = Firebase.analytics
 
 @Composable
 fun HomeScreen(
@@ -140,7 +147,7 @@ fun HomeScreenContent(
                     value = state.titleFilter,
                     onValueChanged = onSearch
                 )
-                
+
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
@@ -171,7 +178,13 @@ fun HomeScreenContent(
                     mediaList[index]?.let { media ->
                         MediaCard(
                             modifier = Modifier.fillMaxWidth(),
-                            media = media
+                            media = media,
+                            onClick = {
+                                val bundle = Bundle().apply {
+                                    putString(FirebaseAnalytics.Param.ITEM_ID, media.imdbID)
+                                }
+                                fa.logEvent(FirebaseAnalytics.Event.SELECT_ITEM, bundle)
+                            }
                         )
                     }
                 }
